@@ -1,17 +1,21 @@
 package com.example.vartikasharma.databasestorage;
 
 
+import java.util.Date;
+
 public class ContactCard {
     private String contactName;
     private String mobileNo;
-    private String totalCallDuration;
+    private Date lastCallDayTime;
+    private int totalCallDuration;
 
     public ContactCard() {
     }
 
-    public ContactCard(String contactName, String mobileNo, String totalCallDuration) {
+    public ContactCard(String contactName, String mobileNo, Date lastCallDayTime, int totalCallDuration) {
         this.contactName = contactName;
         this.mobileNo = mobileNo;
+        this.lastCallDayTime = lastCallDayTime;
         this.totalCallDuration = totalCallDuration;
     }
 
@@ -31,11 +35,19 @@ public class ContactCard {
         this.mobileNo = mobileNo;
     }
 
-    public String getTotalCallDuration() {
+    public int getTotalCallDuration() {
         return totalCallDuration;
     }
 
-    public void setTotalCallDuration(String totalCallDuration) {
+    public void setTotalCallDuration(int totalCallDuration) {
         this.totalCallDuration = totalCallDuration;
+    }
+
+    public Date getLastCallDayTime() {
+        return lastCallDayTime;
+    }
+
+    public void setLastCallDayTime(Date lastCallDayTime) {
+        this.lastCallDayTime = lastCallDayTime;
     }
 }

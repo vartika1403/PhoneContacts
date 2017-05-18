@@ -19,6 +19,8 @@ import android.util.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -47,18 +49,31 @@ public class MainActivity extends AppCompatActivity {
         while (phones != null && phones.moveToNext() && managedCursor != null && managedCursor.moveToNext()) {
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String callDuration = managedCursor.getString(managedCursor.getColumnIndex(CallLog.Calls.DURATION));
+            int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
+            String callDate = managedCursor.getString(date);
+            Date callDayTime = new Date(Long.valueOf(callDate));
+            Log.i(LOG_TAG, "date, " + date);
+            Log.i(LOG_TAG , " callDayTime, " + callDayTime);
 
             String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             Log.i(LOG_TAG, "name, " + name);
             Log.i(LOG_TAG, "phoneNumber, " + phoneNumber);
             if (Integer.parseInt(callDuration) > 0) {
                 Log.i(LOG_TAG, "call duration, " + callDuration + "s");
-                String totalDuration = callDuration + " sec";
-                ContactCard contactCard = new ContactCard(name, phoneNumber, totalDuration);
+                int totalDuration = Integer.parseInt(callDuration) ;
+                ContactCard contactCard = new ContactCard(name, phoneNumber,  callDayTime, totalDuration);
                 contactCardList.add(contactCard);
             }
         }
         phones.close();
+        Collections.sort(contactCardList, new Comparator<ContactCard>() {
+            @Override
+            public int compare(ContactCard contactCard1, ContactCard contactCard2) {
+                return contactCard1.getTotalCallDuration() < contactCard2.getTotalCallDuration() ? -1
+                        : contactCard1.getTotalCallDuration() == contactCard2.getTotalCallDuration() ? 0 : 1;
+            }
+        });
+        Collections.reverse(contactCardList);
         ContactAdapter contactAdapter = new ContactAdapter(contactCardList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
