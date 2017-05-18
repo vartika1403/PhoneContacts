@@ -1,6 +1,7 @@
 package com.example.vartikasharma.databasestorage;
 
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,11 +29,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ContactCard contactCard = contactsList.get(position);
-        holder.contactName.setText(contactCard.getContactName());
-        holder.email.setText(contactCard.getEmail());
-        holder.mobileNo.setText(contactCard.getMobileNo());
-        holder.lastCallTime.setText(contactCard.getLastCallTime());
-        holder.totalTalkTime.setText(contactCard.getTotalCallDuration());
+        holder.contactName.invalidate();
+        holder.mobileNo.invalidate();
+        holder.totalTalkTime.invalidate();
+        holder.contactName.setText("Name : " + contactCard.getContactName());
+        holder.mobileNo.setText("Mobile no : " + contactCard.getMobileNo());
+        holder.totalTalkTime.setText("Total Talk Time : " + contactCard.getTotalCallDuration());
     }
 
     @Override
@@ -41,14 +43,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView contactName, mobileNo, email, lastCallTime, totalTalkTime;
+        public TextView contactName, mobileNo, totalTalkTime;
 
         public MyViewHolder(View view) {
             super(view);
             contactName = (TextView) view.findViewById(R.id.contact_name);
             mobileNo = (TextView) view.findViewById(R.id.mobile);
-            email = (TextView) view.findViewById(R.id.email);
-            lastCallTime = (TextView) view.findViewById(R.id.last_call_time);
             totalTalkTime = (TextView) view.findViewById(R.id.total_call_duration);
         }
     }

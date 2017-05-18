@@ -16,7 +16,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    private List<ContactCard> contactCardList;
-    private ContactAdapter contactAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Cursor managedCursor = getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, null);
-        contactCardList = new ArrayList<>();
+        List<ContactCard> contactCardList = new ArrayList<>();
 
         while (phones != null && phones.moveToNext() && managedCursor != null && managedCursor.moveToNext()) {
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
@@ -51,13 +52,14 @@ public class MainActivity extends AppCompatActivity {
             Log.i(LOG_TAG, "name, " + name);
             Log.i(LOG_TAG, "phoneNumber, " + phoneNumber);
             if (Integer.parseInt(callDuration) > 0) {
-                Log.i(LOG_TAG, "call duration, " + callDuration + name);
+                Log.i(LOG_TAG, "call duration, " + callDuration + "s");
+                String totalDuration = callDuration + " sec";
+                ContactCard contactCard = new ContactCard(name, phoneNumber, totalDuration);
+                contactCardList.add(contactCard);
             }
-            ContactCard contactCard = new ContactCard(name, phoneNumber,"vartika.1403@gmail.com", "11 AM",callDuration);
-            contactCardList.add(contactCard);
         }
         phones.close();
-        contactAdapter = new ContactAdapter(contactCardList);
+        ContactAdapter contactAdapter = new ContactAdapter(contactCardList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

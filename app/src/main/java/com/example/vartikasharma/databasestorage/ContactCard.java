@@ -4,18 +4,14 @@ package com.example.vartikasharma.databasestorage;
 public class ContactCard {
     private String contactName;
     private String mobileNo;
-    private String email;
-    private String lastCallTime;
     private String totalCallDuration;
 
     public ContactCard() {
     }
 
-    public ContactCard(String contactName, String mobileNo, String email, String lastCallTime, String totalCallDuration) {
+    public ContactCard(String contactName, String mobileNo, String totalCallDuration) {
         this.contactName = contactName;
         this.mobileNo = mobileNo;
-        this.email = email;
-        this.lastCallTime = lastCallTime;
         this.totalCallDuration = totalCallDuration;
     }
 
@@ -35,22 +31,6 @@ public class ContactCard {
         this.mobileNo = mobileNo;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLastCallTime() {
-        return lastCallTime;
-    }
-
-    public void setLastCallTime(String lastCallTime) {
-        this.lastCallTime = lastCallTime;
-    }
-
     public String getTotalCallDuration() {
         return totalCallDuration;
     }
@@ -58,6 +38,4 @@ public class ContactCard {
     public void setTotalCallDuration(String totalCallDuration) {
         this.totalCallDuration = totalCallDuration;
     }
-
-
 }
