@@ -3,9 +3,11 @@ package com.example.vartikasharma.databasestorage;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -40,7 +42,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         holder.contactName.setText("Name : " + contactCard.getContactName());
         holder.mobileNo.setText("Mobile no : " + contactCard.getMobileNo());
         holder.lastCallDayTime.setText("Last Call Time : " + contactCard.getLastCallDayTime());
-        holder.totalTalkTime.setText("Total Talk Time : " + contactCard.getTotalCallDuration() + "sec");
+        Log.i("duration >>," , " " + contactCard.getTotalCallDuration());
+        holder.totalTalkTime.setText("Total Talk Time : " + contactCard.getTotalCallDuration() + "min");
+        holder.contactImage.setImageURI(contactCard.getContactImage());
     }
 
     @Override
@@ -50,6 +54,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView contactName, mobileNo, lastCallDayTime, totalTalkTime;
+        public  ImageView contactImage;
 
         public MyViewHolder(View view) {
             super(view);
@@ -57,6 +62,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
             mobileNo = (TextView) view.findViewById(R.id.mobile);
             lastCallDayTime = (TextView) view.findViewById(R.id.last_contact_time);
             totalTalkTime = (TextView) view.findViewById(R.id.total_call_duration);
+            contactImage = (ImageView) view.findViewById(R.id.image);
         }
     }
 }
