@@ -45,7 +45,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         } else {
             holder.email.setText("Email Address : " + "not available");
         }
-        holder.contactImage.setImageURI(contactCard.getContactImage());
+        if (contactCard.getContactImage() != null) {
+            holder.contactImage.invalidate();
+            holder.contactImage.setVisibility(View.VISIBLE);
+            holder.contactImage.setImageURI(contactCard.getContactImage());
+        }
     }
 
     @Override
