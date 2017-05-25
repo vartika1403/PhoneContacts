@@ -1,15 +1,10 @@
 package com.example.vartikasharma.databasestorage;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.CallLog;
-import android.provider.Contacts;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,16 +14,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,77 +39,68 @@ public class MainActivity extends AppCompatActivity {
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
 
+        Cursor cur = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,null, null, null, null);
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             Log.i(LOG_TAG, "permission not granted");
             return;
         }
 
-        /*Cursor c = getContentResolver().query(
-
-                android.provider.CallLog.Calls.CONTENT_URI,
-
-                null, null, null,
-
-                android.provider.CallLog.Calls.DATE + " DESC");*/
+        String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+        Cursor cur1 = getContentResolver().query(
+                ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                new String[]{id}, null);
 
         List<ContactCard> contactCardList = new ArrayList<>();
-        Cursor managedCursor = getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, null);
-        while (phones != null && phones.moveToNext() && managedCursor != null && managedCursor.moveToNext()) {
+        while (phones != null && phones.moveToNext() ) {
 
-            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-
-            int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-            Log.i(LOG_TAG, "duration," + duration);
-            String callDuration = "";
-
-            String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            String lastTimeContacted = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LAST_TIME_CONTACTED));
-            Log.i(LOG_TAG, "lastTimeContacted, " + lastTimeContacted);
-
-            Log.i(LOG_TAG, "name, " + name);
-            Log.i(LOG_TAG, "phoneNumber, " + phoneNumber);
-            if (emails!= null && emails.moveToNext()) {
-                String email = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                Log.i(LOG_TAG, "email, " + email);
-            }
-
-            Uri u = getPhotoUri(phoneNumber);
-
-            Log.i(LOG_TAG, "u" + u);
             String contactId = phones
                     .getString(phones
                             .getColumnIndex(ContactsContract.Contacts._ID));
+            Cursor emailCur = getContentResolver().query(
+                    ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                    null,
+                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                    new String[]{contactId}, null);
+            while (emailCur != null && emailCur.moveToNext()) {
 
-            callDuration = managedCursor.getString(duration);
-            Log.i(LOG_TAG, "this is duration, " + callDuration);
-            Log.i(LOG_TAG, "callDuartion, " + Integer.parseInt(callDuration));
-            Date callDayTime = null;
-            int totalDuration = Integer.parseInt(callDuration) / 60;
-            if (!lastTimeContacted.equals("0")) {
-                callDayTime = new Date(Long.valueOf(lastTimeContacted));
-                Log.i(LOG_TAG, " callDayTime, " + callDayTime);
-                Log.i(LOG_TAG, "call duration, " + callDuration + "s");
-                Log.d(LOG_TAG, "totalDuartion, " + totalDuration);
+                String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String lastTimeContacted = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LAST_TIME_CONTACTED));
+                Log.i(LOG_TAG, "lastTimeContacted, " + lastTimeContacted);
 
-                Log.i(LOG_TAG, "display," + "yes");
-                ContactCard contactCard = new ContactCard(name, phoneNumber, callDayTime, 24, u);
-                contactCardList.add(contactCard);
+                Log.i(LOG_TAG, "name, " + name);
+                Log.i(LOG_TAG, "phoneNumber, " + phoneNumber);
 
-                Log.i(LOG_TAG, " callDayTime>>, " + callDayTime);
+                Uri u = getPhotoUri(phoneNumber);
+                Date callDayTime = null;
+                String email = "";
+
+                if (!lastTimeContacted.equals("0")) {
+                    callDayTime = new Date(Long.valueOf(lastTimeContacted));
+                    Log.i(LOG_TAG, " callDayTime, " + callDayTime);
+                    email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                    Log.i(LOG_TAG, "email, " + email);
+                    ContactCard contactCard = new ContactCard(name, phoneNumber, callDayTime, email, u);
+                    contactCardList.add(contactCard);
+
+                    Log.i(LOG_TAG, " callDayTime>>, " + callDayTime);
+                }
 
             }
+            emailCur.close();
         }
 
            phones.close();
-            managedCursor.close();
-            Collections.sort(contactCardList, new Comparator<ContactCard>() {
+            /*Collections.sort(contactCardList, new Comparator<ContactCard>() {
                 @Override
                 public int compare(ContactCard contactCard1, ContactCard contactCard2) {
-                    return contactCard1.getTotalCallDuration() < contactCard2.getTotalCallDuration() ? -1
+                    return contactCard1.() < contactCard2.getTotalCallDuration() ? -1
                             : contactCard1.getTotalCallDuration() == contactCard2.getTotalCallDuration() ? 0 : 1;
                 }
             });
-            Collections.reverse(contactCardList);
+            Collections.reverse(contactCardList);*/
             ContactAdapter contactAdapter = new ContactAdapter(contactCardList);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -162,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private String getEmailAddress() {
-        String emailAddress = "";
+   /* private String getEmailAddress() {
+   *//*     String emailAddress = "";
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null,
                 null, null, null);
@@ -172,13 +153,9 @@ public class MainActivity extends AppCompatActivity {
                 String id = cur.getString(cur
                         .getColumnIndex(ContactsContract.Contacts._ID));
 
-                Cursor emailCur = cr.query(
-                        ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                        null,
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                        new String[]{id}, null);
-                if (emailCur != null) {
-                    while (emailCur.moveToNext()) {
+
+            *//**//*    if (emailCur != null) {
+               *//**//**//**//*     while (emailCur.moveToNext()) {
                         emailAddress = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                         Log.i(LOG_TAG, "email address," + emailAddress);
 
@@ -186,13 +163,13 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                     emailCur.close();
-                }
+                }*//**//**//**//*
             }
             cur.close();
         }
-        return  emailAddress;
-    }
-
+        return  emailAddress;*//**//*
+    }*//*
+*/
 
 
     private Uri getPhotoUri(String contactNumber) {

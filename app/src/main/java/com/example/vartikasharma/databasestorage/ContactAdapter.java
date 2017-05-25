@@ -1,7 +1,5 @@
 package com.example.vartikasharma.databasestorage;
 
-
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,13 +35,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         holder.mobileNo.setText("");
         holder.lastCallDayTime.invalidate();
         holder.lastCallDayTime.setText("");
-        holder.totalTalkTime.invalidate();
-        holder.totalTalkTime.setText("");
+        holder.email.invalidate();
+        holder.email.setText("");
         holder.contactName.setText("Name : " + contactCard.getContactName());
         holder.mobileNo.setText("Mobile no : " + contactCard.getMobileNo());
         holder.lastCallDayTime.setText("Last Call Time : " + contactCard.getLastCallDayTime());
-        Log.i("duration >>," , " " + contactCard.getTotalCallDuration());
-        holder.totalTalkTime.setText("Total Talk Time : " + contactCard.getTotalCallDuration() + "min");
+        Log.i("email >>," , " " + contactCard.getEmailAddresss());
+        holder.email.setText("Email Address : " + contactCard.getEmailAddresss());
         holder.contactImage.setImageURI(contactCard.getContactImage());
     }
 
@@ -53,7 +51,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView contactName, mobileNo, lastCallDayTime, totalTalkTime;
+        public TextView contactName, mobileNo, lastCallDayTime, email;
         public  ImageView contactImage;
 
         public MyViewHolder(View view) {
@@ -61,7 +59,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
             contactName = (TextView) view.findViewById(R.id.contact_name);
             mobileNo = (TextView) view.findViewById(R.id.mobile);
             lastCallDayTime = (TextView) view.findViewById(R.id.last_contact_time);
-            totalTalkTime = (TextView) view.findViewById(R.id.total_call_duration);
+            email = (TextView) view.findViewById(R.id.email);
             contactImage = (ImageView) view.findViewById(R.id.image);
         }
     }

@@ -11,16 +11,16 @@ public class ContactCard {
     private String mobileNo;
     private Date lastCallDayTime;
     private Uri contactImage;
-    private int totalCallDuration;
+    private String emailAddress;
 
     public ContactCard() {
     }
 
-    public ContactCard(String contactName, String mobileNo, Date lastCallDayTime, int totalCallDuration, Uri contactImage) {
+    public ContactCard(String contactName, String mobileNo, Date lastCallDayTime, String emailAddress, Uri contactImage) {
         this.contactName = contactName;
         this.mobileNo = mobileNo;
         this.lastCallDayTime = lastCallDayTime;
-        this.totalCallDuration = totalCallDuration;
+        this.emailAddress = emailAddress;
         this.contactImage = contactImage;
     }
 
@@ -40,12 +40,12 @@ public class ContactCard {
         this.mobileNo = mobileNo;
     }
 
-    public int getTotalCallDuration() {
-        return totalCallDuration;
+    public String getEmailAddresss() {
+        return emailAddress;
     }
 
-    public void setTotalCallDuration(int totalCallDuration) {
-        this.totalCallDuration = totalCallDuration;
+    public void setEmailAddress(String totalCallDuration) {
+        this.emailAddress = totalCallDuration;
     }
 
     public Date getLastCallDayTime() {
