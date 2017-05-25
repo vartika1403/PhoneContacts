@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static String LOG_TAG = MainActivity.class.getSimpleName();
     List<ContactCard> contactCardList = new ArrayList<>();
     ArrayList<String> personNameList = new ArrayList<>();
+    ArrayList<String> imageUri = new ArrayList<>();
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -57,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
                 String contactId = cur.getString(4);
                 String email = getEmailAddress(contactId);
                 Uri image = null;
-                if (photo != null) {
+                if (photo != null && !imageUri.contains(photo)) {
                     image = Uri.parse(photo);
+                    imageUri.add(photo);
                 }
                 if (!lastTimeContacted.equals("0") && !personNameList.contains(name)) {
                     Date callDateTime = new Date(Long.valueOf(lastTimeContacted));
