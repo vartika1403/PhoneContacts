@@ -55,7 +55,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView contactName, mobileNo, lastCallDayTime, email;
-        public  ImageView contactImage;
+        public ImageView contactImage;
 
         public MyViewHolder(View view) {
             super(view);

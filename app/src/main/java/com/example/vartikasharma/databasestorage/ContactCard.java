@@ -2,8 +2,6 @@ package com.example.vartikasharma.databasestorage;
 
 
 import android.net.Uri;
-
-import java.net.URI;
 import java.util.Date;
 
 public class ContactCard {
@@ -63,5 +61,4 @@ public class ContactCard {
     public void setContactImage(Uri contactImage) {
         this.contactImage = contactImage;
     }
-
 }
