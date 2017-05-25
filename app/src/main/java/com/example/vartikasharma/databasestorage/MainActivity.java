@@ -46,28 +46,22 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-        Cursor cur1 = getContentResolver().query(
-                ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                new String[]{id}, null);
-
         List<ContactCard> contactCardList = new ArrayList<>();
-        while (phones != null && phones.moveToNext() ) {
+        while ( cur != null && cur.getCount() > 0 && cur.moveToNext() ) {
 
-            String contactId = phones
-                    .getString(phones
+            String contactId = cur.getString(cur
                             .getColumnIndex(ContactsContract.Contacts._ID));
+
             Cursor emailCur = getContentResolver().query(
                     ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                     null,
                     ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
                     new String[]{contactId}, null);
-            while (emailCur != null && emailCur.moveToNext()) {
+            while (emailCur.moveToNext()) {
 
-                String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                String lastTimeContacted = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LAST_TIME_CONTACTED));
+                String name = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String phoneNumber = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String lastTimeContacted = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LAST_TIME_CONTACTED));
                 Log.i(LOG_TAG, "lastTimeContacted, " + lastTimeContacted);
 
                 Log.i(LOG_TAG, "name, " + name);
@@ -75,24 +69,23 @@ public class MainActivity extends AppCompatActivity {
 
                 Uri u = getPhotoUri(phoneNumber);
                 Date callDayTime = null;
-                String email = "";
+                String email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                Log.i(LOG_TAG, "email address, " + email);
 
-                if (!lastTimeContacted.equals("0")) {
+               /* if (!lastTimeContacted.equals("0")) {*/
                     callDayTime = new Date(Long.valueOf(lastTimeContacted));
                     Log.i(LOG_TAG, " callDayTime, " + callDayTime);
-                    email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                    Log.i(LOG_TAG, "email, " + email);
                     ContactCard contactCard = new ContactCard(name, phoneNumber, callDayTime, email, u);
                     contactCardList.add(contactCard);
 
                     Log.i(LOG_TAG, " callDayTime>>, " + callDayTime);
-                }
+              //  }
 
             }
             emailCur.close();
         }
 
-           phones.close();
+           cur.close();
             /*Collections.sort(contactCardList, new Comparator<ContactCard>() {
                 @Override
                 public int compare(ContactCard contactCard1, ContactCard contactCard2) {
@@ -183,8 +176,11 @@ public class MainActivity extends AppCompatActivity {
           contactLookupCursor.close();
       }
 
-        Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long
-                .parseLong(contactID));
-        return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+        if (contactID != null) {
+            Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long
+                    .parseLong(contactID));
+            return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+        }
+        return  null;
     }
 }
