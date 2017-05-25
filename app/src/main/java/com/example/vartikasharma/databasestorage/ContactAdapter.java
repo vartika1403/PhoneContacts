@@ -40,8 +40,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         holder.contactName.setText("Name : " + contactCard.getContactName());
         holder.mobileNo.setText("Mobile no : " + contactCard.getMobileNo());
         holder.lastCallDayTime.setText("Last Call Time : " + contactCard.getLastCallDayTime());
-        Log.i("email >>," , " " + contactCard.getEmailAddresss());
-        holder.email.setText("Email Address : " + contactCard.getEmailAddresss());
+        if (!contactCard.getEmailAddresss().equals("")) {
+            holder.email.setText("Email Address : " + contactCard.getEmailAddresss());
+        } else {
+            holder.email.setText("Email Address : " + "not available");
+        }
         holder.contactImage.setImageURI(contactCard.getContactImage());
     }
 
